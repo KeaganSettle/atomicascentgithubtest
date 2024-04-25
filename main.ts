@@ -12,6 +12,9 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (PlayerSprite.isHittingTile(CollisionDirection.Bottom)) {
         PlayerSprite.setVelocity(0, -150)
     }
+    if (true) {
+    	
+    }
 })
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     MeleeProjectile = sprites.createProjectileFromSprite(assets.image`AttackArc`, PlayerSprite, 100, 0)
@@ -53,6 +56,12 @@ function Swing () {
 function toRadians (num: number) {
     return num * 3.1415926535 / 180
 }
+controller.combos.attachCombo("\"U+A\"", function () {
+    hook_vx = 0
+    hook_vy = -400
+    Reel_Step = 3
+    SwingSpeed = 200
+})
 controller.A.onEvent(ControllerButtonEvent.Released, function () {
     CheckStopGrappling()
 })
@@ -171,6 +180,12 @@ function UpdatePlayerSprite () {
 }
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
     sprites.destroy(otherSprite, effects.spray, 500)
+})
+controller.combos.attachCombo("\"R+A\"", function () {
+    hook_vx = 400
+    hook_vy = 0
+    Reel_Step = 1
+    SwingSpeed = 50
 })
 let Anchor_Dir_X = 0
 let AnchorRatio = 0
