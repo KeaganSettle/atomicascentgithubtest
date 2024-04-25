@@ -12,8 +12,16 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (PlayerSprite.isHittingTile(CollisionDirection.Bottom)) {
         PlayerSprite.setVelocity(0, -150)
     }
-    if (true) {
-    	
+    if (Grappling) {
+        Grappling = false
+        Anchored = false
+        PlayerSprite.ay = G
+        sprites.destroy(Hook)
+        for (let value of GrappleDots) {
+            sprites.destroy(value)
+        }
+        sprites.destroy(attach)
+        PlayerSprite.setVelocity(0, -175)
     }
 })
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -184,16 +192,13 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, oth
 controller.combos.attachCombo("\"R+A\"", function () {
     hook_vx = 400
     hook_vy = 0
-    Reel_Step = 1
-    SwingSpeed = 50
+    Reel_Step = 0.25
+    SwingSpeed = 100
 })
 let Anchor_Dir_X = 0
 let AnchorRatio = 0
-let attach: Sprite = null
-let Grappling = false
 let _dot_y = 0
 let _dot_x = 0
-let GrappleDots: Sprite[] = []
 let _step_x = 0
 let _prev_x = 0
 let anchor_dist_y = 0
@@ -205,6 +210,9 @@ let AnchorTime = 0
 let _t = 0
 let hasStarted = false
 let MeleeProjectile: Sprite = null
+let attach: Sprite = null
+let GrappleDots: Sprite[] = []
+let Grappling = false
 let _step_y = 0
 let Hook: Sprite = null
 let _dist_y = 0
