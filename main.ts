@@ -8,22 +8,6 @@ function ReelIn () {
         PlayerSprite.y = PlayerSprite.y - _step_y
     }
 }
-controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (PlayerSprite.isHittingTile(CollisionDirection.Bottom)) {
-        PlayerSprite.setVelocity(0, -150)
-    }
-    if (Grappling) {
-        Grappling = false
-        Anchored = false
-        PlayerSprite.ay = G
-        sprites.destroy(Hook)
-        for (let value of GrappleDots) {
-            sprites.destroy(value)
-        }
-        sprites.destroy(attach)
-        PlayerSprite.setVelocity(0, -175)
-    }
-})
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     MeleeProjectile = sprites.createProjectileFromSprite(assets.image`AttackArc`, PlayerSprite, 100, 0)
     pause(100)
@@ -64,12 +48,6 @@ function Swing () {
 function toRadians (num: number) {
     return num * 3.1415926535 / 180
 }
-controller.combos.attachCombo("\"U+A\"", function () {
-    hook_vx = 0
-    hook_vy = -400
-    Reel_Step = 3
-    SwingSpeed = 200
-})
 controller.A.onEvent(ControllerButtonEvent.Released, function () {
     CheckStopGrappling()
 })
@@ -105,6 +83,22 @@ function CheckStopGrappling () {
         sprites.destroy(attach)
     }
 }
+controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (PlayerSprite.isHittingTile(CollisionDirection.Bottom)) {
+        PlayerSprite.setVelocity(0, -150)
+    }
+    if (Grappling) {
+        Grappling = false
+        Anchored = false
+        PlayerSprite.ay = G
+        sprites.destroy(Hook)
+        for (let value of GrappleDots) {
+            sprites.destroy(value)
+        }
+        sprites.destroy(attach)
+        PlayerSprite.setVelocity(0, -175)
+    }
+})
 scene.onHitWall(SpriteKind.Projectile, function (sprite, location) {
     if (sprite == Hook) {
         Anchored = true
@@ -124,29 +118,12 @@ scene.onHitWall(SpriteKind.Projectile, function (sprite, location) {
 function CheckGrappleStart () {
     if (!(Grappling)) {
         Grappling = true
-        Hook = sprites.createProjectileFromSprite(assets.image`Bullet`, PlayerSprite, hook_vx * direction_x, hook_vy)
+        Hook = sprites.createProjectileFromSprite(assets.image`HookRight`, PlayerSprite, hook_vx * direction_x, hook_vy)
         Hook.setFlag(SpriteFlag.DestroyOnWall, false)
         Hook.setFlag(SpriteFlag.AutoDestroy, false)
         GrappleDots = []
         for (let index = 0; index < 10; index++) {
-            GrappleDots.unshift(sprites.create(img`
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . 1 1 1 . . . . . . . 
-                . . . . . . 1 1 1 . . . . . . . 
-                . . . . . . 1 1 1 . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                `, SpriteKind.GrapplePart))
+            GrappleDots.unshift(sprites.create(assets.image`GrappleRopeBit`, SpriteKind.GrapplePart))
         }
         attach = sprites.create(img`
             . . . . . . . . . . . . . . . . 
@@ -189,16 +166,13 @@ function UpdatePlayerSprite () {
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
     sprites.destroy(otherSprite, effects.spray, 500)
 })
-controller.combos.attachCombo("\"R+A\"", function () {
-    hook_vx = 400
-    hook_vy = 0
-    Reel_Step = 0.25
-    SwingSpeed = 100
-})
 let Anchor_Dir_X = 0
 let AnchorRatio = 0
+let attach: Sprite = null
+let Grappling = false
 let _dot_y = 0
 let _dot_x = 0
+let GrappleDots: Sprite[] = []
 let _step_x = 0
 let _prev_x = 0
 let anchor_dist_y = 0
@@ -210,9 +184,6 @@ let AnchorTime = 0
 let _t = 0
 let hasStarted = false
 let MeleeProjectile: Sprite = null
-let attach: Sprite = null
-let GrappleDots: Sprite[] = []
-let Grappling = false
 let _step_y = 0
 let Hook: Sprite = null
 let _dist_y = 0
@@ -240,9 +211,7 @@ EnemySprite.ay = G
 tiles.setCurrentTilemap(tilemap`level2`)
 info.setLife(3)
 direction_x = 1
-game.onUpdateInterval(5000, function () {
-    tiles.placeOnTile(EnemySprite, tiles.getTileLocation(14, 5))
-})
+tiles.placeOnTile(EnemySprite, tiles.getTileLocation(14, 5))
 forever(function () {
     updateGrappling()
     UpdatePlayerSprite()
