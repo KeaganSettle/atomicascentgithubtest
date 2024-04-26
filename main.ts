@@ -9,15 +9,25 @@ function ReelIn () {
     }
 }
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
-    MeleeProjectile = sprites.createProjectileFromSprite(assets.image`AttackArc`, PlayerSprite, 100, 0)
+    if (direction_x == 1) {
+        MeleeProjectile = sprites.createProjectileFromSprite(assets.image`AttackArc`, PlayerSprite, 150 * direction_x, 0)
+        animation.runImageAnimation(
+        PlayerSprite,
+        assets.animation`SwingAttack`,
+        75,
+        false
+        )
+    } else {
+        MeleeProjectile = sprites.createProjectileFromSprite(assets.image`AttackArcLeft`, PlayerSprite, 150 * direction_x, 0)
+        animation.runImageAnimation(
+        PlayerSprite,
+        assets.animation`SwingAttackLeft`,
+        75,
+        false
+        )
+    }
     pause(100)
     sprites.destroy(MeleeProjectile)
-    animation.runImageAnimation(
-    PlayerSprite,
-    assets.animation`SwingAttack`,
-    50,
-    false
-    )
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     CheckGrappleStart()
@@ -38,16 +48,23 @@ function Swing () {
         _amp = Math.abs(anchor_dist_x) * (-1 * sign(anchor_dist_x)) * cos_t * (_dist_y / anchor_dist_y)
         _prev_x = PlayerSprite.x
         PlayerSprite.x = Hook.x + _amp
-        if (_prev_x <= PlayerSprite.x) {
-            direction_x = 1
-        } else {
-            direction_x = -1
-        }
     }
 }
+controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (direction_x == 1) {
+        PlayerSprite.image.flipX()
+    }
+    direction_x = -1
+})
 function toRadians (num: number) {
     return num * 3.1415926535 / 180
 }
+controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (direction_x == -1) {
+        PlayerSprite.image.flipX()
+    }
+    direction_x = 1
+})
 controller.A.onEvent(ControllerButtonEvent.Released, function () {
     CheckStopGrappling()
 })
@@ -156,11 +173,9 @@ function sign (num: number) {
 }
 function UpdatePlayerSprite () {
     if (direction_x < 0) {
-        let PlayerSpriteFlipped: Image = null
-        PlayerSprite.setImage(PlayerSpriteFlipped)
+    	
     } else {
-        let PlayerSpriteImage: Image = null
-        PlayerSprite.setImage(PlayerSpriteImage)
+    	
     }
 }
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
@@ -215,12 +230,4 @@ tiles.placeOnTile(EnemySprite, tiles.getTileLocation(14, 5))
 forever(function () {
     updateGrappling()
     UpdatePlayerSprite()
-})
-forever(function () {
-    if (controller.left.isPressed()) {
-        direction_x = -1
-    }
-    if (controller.right.isPressed()) {
-        direction_x = 1
-    }
 })
