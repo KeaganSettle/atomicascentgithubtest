@@ -18,45 +18,11 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
         false
         )
     } else {
-        MeleeProjectile = sprites.createProjectileFromSprite(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            `, PlayerSprite, 150 * direction_x, 0)
+        MeleeProjectile = sprites.createProjectileFromSprite(assets.image`AttackArcLeft`, PlayerSprite, 150 * direction_x, 0)
         animation.runImageAnimation(
         PlayerSprite,
-        [img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            `],
-        75,
+        assets.animation`SwingAttackLeft`,
+        100,
         false
         )
     }
@@ -297,7 +263,7 @@ forever(function () {
             if (PlayerSprite.x >= EnemySprite.x) {
                 projectile2 = sprites.createProjectileFromSprite(assets.image`AttackArc`, EnemySprite, 50, 0)
             } else {
-                projectile2 = sprites.createProjectileFromSprite(assets.image`AttackArc`, EnemySprite, -50, 0)
+                projectile2 = sprites.createProjectileFromSprite(assets.image`AttackArcLeft`, EnemySprite, -50, 0)
             }
         }
     }
