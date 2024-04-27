@@ -18,10 +18,44 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
         false
         )
     } else {
-        MeleeProjectile = sprites.createProjectileFromSprite(assets.image`AttackArcLeft`, PlayerSprite, 150 * direction_x, 0)
+        MeleeProjectile = sprites.createProjectileFromSprite(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, PlayerSprite, 150 * direction_x, 0)
         animation.runImageAnimation(
         PlayerSprite,
-        assets.animation`SwingAttackLeft`,
+        [img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `],
         75,
         false
         )
@@ -181,6 +215,7 @@ function UpdatePlayerSprite () {
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
     sprites.destroy(otherSprite, effects.spray, 500)
 })
+let projectile2: Sprite = null
 let Anchor_Dir_X = 0
 let AnchorRatio = 0
 let attach: Sprite = null
@@ -223,10 +258,50 @@ PlayerSprite.setPosition(12, 88)
 cameraOffsetScene.cameraFollowWithOffset(PlayerSprite, 0, -35)
 let EnemySprite = sprites.create(assets.image`TestEnemy`, SpriteKind.Enemy)
 EnemySprite.ay = G
+let testenemy = sprites.create(img`
+    ........................
+    ........................
+    ........................
+    ........................
+    ..........ffff..........
+    ........ff1111ff........
+    .......fb111111bf.......
+    .......f11111111f.......
+    ......fd11111111df......
+    ......fd11111111df......
+    ......fddd1111dddf......
+    ......fbdbfddfbdbf......
+    ......fcdcf11fcdcf......
+    .......fb111111bf.......
+    ......fffcdb1bdffff.....
+    ....fc111cbfbfc111cf....
+    ....f1b1b1ffff1b1b1f....
+    ....fbfbffffffbfbfbf....
+    .........ffffff.........
+    ...........fff..........
+    ........................
+    ........................
+    ........................
+    ........................
+    `, SpriteKind.Enemy)
 tiles.setCurrentTilemap(tilemap`level2`)
 info.setLife(3)
 direction_x = 1
+tiles.placeOnTile(testenemy, tiles.getTileLocation(12, 7))
 tiles.placeOnTile(EnemySprite, tiles.getTileLocation(14, 5))
+forever(function () {
+    if (PlayerSprite.y == EnemySprite.y) {
+        EnemySprite.follow(PlayerSprite, 40)
+        EnemySprite.ay = 400
+        if (Math.percentChance(100)) {
+            if (PlayerSprite.x >= EnemySprite.x) {
+                projectile2 = sprites.createProjectileFromSprite(assets.image`AttackArc`, EnemySprite, 50, 0)
+            } else {
+                projectile2 = sprites.createProjectileFromSprite(assets.image`AttackArc`, EnemySprite, -50, 0)
+            }
+        }
+    }
+})
 forever(function () {
     updateGrappling()
     UpdatePlayerSprite()
