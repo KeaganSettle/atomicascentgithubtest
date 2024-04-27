@@ -258,7 +258,6 @@ tiles.placeOnTile(EnemySprite, tiles.getTileLocation(14, 5))
 forever(function () {
     if (PlayerSprite.y == EnemySprite.y) {
         EnemySprite.follow(PlayerSprite, 40)
-        EnemySprite.ay = 400
         if (Math.percentChance(100)) {
             if (PlayerSprite.x >= EnemySprite.x) {
                 projectile2 = sprites.createProjectileFromSprite(assets.image`AttackArc`, EnemySprite, 50, 0)
